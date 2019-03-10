@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+    {% block body %}
+    <div class="container">
+        {%for post in posts  %}
+            <div class ="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            {% if post.image %}
+                                <img src="{{ post.image.url }}" class="img-responsive">
+                            {% endif %}
+                            <h3>{{ post.title }} <small> {{ post.publishing_date|timesince }} önce</small></h3>
+                            <p>{{ post.content|safe|linebreaks|truncatechars:150 }}</p>
+                            <p><a href="{{ post.get_absolute_url }}" class="btn btn-primary" role="button">İncele</a>
+                                {% if request.user.is_authenticated %}
+                                <a href="{{ post.get_update_url }}" class="btn btn-default" role="button">Güncelle</a>
+                                <a href="{{ post.get_delete_url }}" class="btn btn-danger" role="button">Sil</a>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    {% endfor %}
+
+    <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if posts.has_previous %}
+                    <a href="?sayfa=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo; first</a>
+                    <a href="?sayfa={{ posts.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+                    {% endif %}
+                <span class="current">
+                    Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+                </span>
+                {% if posts.has_next %}
+                    <a href="?sayfa={{ posts.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+                    <a href="?sayfa={{ posts.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+    </div>
+    {% endblock %}
